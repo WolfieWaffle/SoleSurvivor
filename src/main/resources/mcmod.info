@@ -1,0 +1,17 @@
+[
+{
+  "modid": "thermalpot",
+  "name": "Thermal Pot",
+  "description": "A pot for cooking things",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [ "Wolfie_Waffle" ],
+  "requiredMods": [ "Forge", "toughasnails" ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
