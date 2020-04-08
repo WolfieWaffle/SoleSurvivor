@@ -23,6 +23,7 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 @EventBusSubscriber
@@ -98,6 +100,17 @@ public class SoleSurvivor {
 
 				SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(newTemp), ((EntityPlayerMP) event.getPlayer()));
 			}
+		}
+	}
+
+	// This is when the player joins the game
+	@SubscribeEvent
+	public static void onJoin(PlayerLoggedInEvent event) {
+		ITemperature temperatureCap = event.player.getCapability(TemperatureProvider.TEMPERATURE, null);
+
+		// Send a packet to the client
+		if (!event.player.world.isRemote) {
+			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(temperatureCap.getTemperature()), ((EntityPlayerMP) event.player));
 		}
 	}
 
