@@ -10,10 +10,12 @@ import capability.ITemperature;
 import capability.Temperature;
 import capability.TemperatureProvider;
 import capability.TemperatureStorage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -84,14 +86,18 @@ public class SoleSurvivor {
 
 	@SubscribeEvent
 	public static void breakBlock(BreakEvent event) {
-		System.out.println(event.getPlayer());
 		if (event.getPlayer() != null) {
-			EntityPlayer player = event.getPlayer();
-			ITemperature cap = player.getCapability(TEMPERATURE, null);
 
-//			System.out.println("BEFORE " + cap.getTemperature());
-			cap.setTemperature(cap.getTemperature() + 1);
-//			System.out.println("AFTER " + cap.getTemperature());
+			// Send a packet to the client
+			if (!event.getPlayer().world.isRemote) {
+				EntityPlayer player = event.getPlayer();
+				ITemperature cap = player.getCapability(TEMPERATURE, null);
+				double newTemp = cap.getTemperature() - 1000;
+
+				cap.setTemperature(newTemp);
+
+				SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(newTemp), ((EntityPlayerMP) event.getPlayer()));
+			}
 		}
 	}
 
@@ -127,6 +133,13 @@ public class SoleSurvivor {
 	}
 
 	@SubscribeEvent
+	public static void renderText(RenderGameOverlayEvent.Text event) {
+		ITemperature cap = Minecraft.getMinecraft().player.getCapability(TEMPERATURE, null);
+
+		event.getLeft().add("TEMP: " + cap.getTemperature());
+	}
+
+	@SubscribeEvent
 	public static void playerTick(PlayerTickEvent event) {
 		ITemperature cap = event.player.getCapability(TEMPERATURE, null);
 		double newTemp = cap.getTemperature() + 1;
@@ -142,7 +155,7 @@ public class SoleSurvivor {
 
 		// Send packet
 		if (!event.player.world.isRemote) {
-			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(newTemp), ((EntityPlayerMP) event.player));
+			//SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(newTemp), ((EntityPlayerMP) event.player));
 		}
 	}
 

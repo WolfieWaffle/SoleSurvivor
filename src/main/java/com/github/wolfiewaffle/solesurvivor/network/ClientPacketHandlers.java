@@ -21,7 +21,7 @@ public class ClientPacketHandlers {
 		double temp = message.getTemperature();
 
 		Minecraft.getMinecraft().addScheduledTask(() -> {
-			System.out.println("TEMP " + temp);
+			System.out.println("cEMP " + temp);
 
 			// We know this is client capability instance because this method is
 			// not called on the server because
