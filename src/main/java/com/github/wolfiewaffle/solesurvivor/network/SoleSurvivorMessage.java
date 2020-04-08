@@ -1,12 +1,8 @@
 package com.github.wolfiewaffle.solesurvivor.network;
 
-import capability.ITemperature;
+import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
+
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

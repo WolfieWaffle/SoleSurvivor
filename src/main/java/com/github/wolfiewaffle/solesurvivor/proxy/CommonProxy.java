@@ -1,10 +1,5 @@
 package com.github.wolfiewaffle.solesurvivor.proxy;
 
-import capability.ITemperature;
-import capability.Temperature;
-import capability.TemperatureStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-
 //import com.github.wolfiewaffle.tanspit.tileentity.ModTileEntities;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

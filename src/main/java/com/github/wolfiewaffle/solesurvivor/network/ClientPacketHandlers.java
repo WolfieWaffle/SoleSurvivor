@@ -1,8 +1,8 @@
 package com.github.wolfiewaffle.solesurvivor.network;
 
 import com.github.wolfiewaffle.solesurvivor.SoleSurvivor;
+import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
 
-import capability.ITemperature;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

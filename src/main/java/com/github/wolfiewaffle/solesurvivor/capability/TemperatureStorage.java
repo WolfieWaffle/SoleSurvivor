@@ -1,4 +1,4 @@
-package capability;
+package com.github.wolfiewaffle.solesurvivor.capability;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

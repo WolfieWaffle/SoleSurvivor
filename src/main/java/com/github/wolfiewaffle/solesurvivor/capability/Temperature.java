@@ -1,4 +1,4 @@
-package capability;
+package com.github.wolfiewaffle.solesurvivor.capability;
 
 public class Temperature implements ITemperature {
 
