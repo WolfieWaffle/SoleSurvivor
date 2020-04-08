@@ -1,7 +1,7 @@
 package com.github.wolfiewaffle.solesurvivor.network;
 
-import com.github.wolfiewaffle.solesurvivor.SoleSurvivor;
 import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
+import com.github.wolfiewaffle.solesurvivor.handlers.SoleSurvivorEventHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +26,7 @@ public class ClientPacketHandlers {
 			// We know this is client capability instance because this method is
 			// not called on the server because
 			// the packet is not sent to the server, therefore no isRemote check
-			ITemperature cap = clientPlayer.getCapability(SoleSurvivor.TEMPERATURE, null);
+			ITemperature cap = clientPlayer.getCapability(SoleSurvivorEventHandler.TEMPERATURE, null);
 			cap.setTemperature(temp);
 		});
 	}

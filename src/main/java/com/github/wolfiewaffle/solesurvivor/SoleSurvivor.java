@@ -4,21 +4,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
 import com.github.wolfiewaffle.solesurvivor.capability.Temperature;
-import com.github.wolfiewaffle.solesurvivor.capability.TemperatureProvider;
 import com.github.wolfiewaffle.solesurvivor.capability.TemperatureStorage;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorPacketHandler;
 import com.github.wolfiewaffle.solesurvivor.proxy.CommonProxy;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -27,7 +20,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @EventBusSubscriber
 @Mod(modid = SoleSurvivor.MODID, name = SoleSurvivor.MODNAME, version = SoleSurvivor.VERSION)
@@ -67,19 +59,7 @@ public class SoleSurvivor {
 		SoleSurvivor.proxy.postInit(event);
 	}
 
-	@SubscribeEvent
-	public static void capabilities(AttachCapabilitiesEvent<Entity> event) {
-		if (event.getObject() instanceof EntityPlayer) {
-			event.addCapability(new ResourceLocation(MODID, "TEMPERATURE"), new TemperatureProvider(new Temperature()));
-		}
-	}
-
-	@CapabilityInject(value = ITemperature.class)
-	public static Capability<ITemperature> TEMPERATURE = null;
-
-
-
-// IGNORE COPIED FROM A PREVIOUS MOD
+	// IGNORE COPIED FROM A PREVIOUS MOD
 	@Config(modid = MODID) // TODO: Config
 	public static class CONFIG {
 		@Comment({ "If this is true, no items in itemList can be used in the campfire. If false, only items listed can be used." })

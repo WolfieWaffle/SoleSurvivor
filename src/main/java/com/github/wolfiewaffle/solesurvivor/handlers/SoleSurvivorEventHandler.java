@@ -1,16 +1,24 @@
-package com.github.wolfiewaffle.solesurvivor;
+package com.github.wolfiewaffle.solesurvivor.handlers;
 
+import com.github.wolfiewaffle.solesurvivor.SoleSurvivor;
 import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
+import com.github.wolfiewaffle.solesurvivor.capability.Temperature;
 import com.github.wolfiewaffle.solesurvivor.capability.TemperatureProvider;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorMessage;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorPacketHandler;
+import com.github.wolfiewaffle.solesurvivor.util.BiomeUtil;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -24,6 +32,13 @@ public class SoleSurvivorEventHandler {
 
 	@CapabilityInject(value = ITemperature.class)
 	public static Capability<ITemperature> TEMPERATURE = null;
+
+	@SubscribeEvent
+	public static void capabilities(AttachCapabilitiesEvent<Entity> event) {
+		if (event.getObject() instanceof EntityPlayer) {
+			event.addCapability(new ResourceLocation(SoleSurvivor.MODID, "TEMPERATURE"), new TemperatureProvider(new Temperature()));
+		}
+	}
 
 	@SubscribeEvent
 	public static void breakBlock(BreakEvent event) {
@@ -86,9 +101,13 @@ public class SoleSurvivorEventHandler {
 
 	@SubscribeEvent
 	public static void renderText(RenderGameOverlayEvent.Text event) {
-		ITemperature cap = Minecraft.getMinecraft().player.getCapability(TEMPERATURE, null);
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		ITemperature cap = player.getCapability(TEMPERATURE, null);
+		Biome biome = BiomeUtil.getBiomeAtLocation(player.world, new BlockPos(player.posX, player.posY, player.posZ));
 
 		event.getLeft().add("TEMP: " + cap.getTemperature());
+		event.getLeft().add("BIOMETEMP: " + BiomeUtil.getBiomeTemperature(biome, player.posX, player.posY, player.posZ));
+		event.getLeft().add("test");
 	}
 
 	@SubscribeEvent
