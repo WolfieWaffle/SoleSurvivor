@@ -70,4 +70,5 @@ public class SoleSurvivor {
 		@Comment({ "This is the item list used with isItemBlacklist to determine what items can be placed onto the spit." })
 		public static String[] itemList = { "minecraft:example" };
 	}
+
 }
