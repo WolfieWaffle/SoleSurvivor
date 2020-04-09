@@ -21,4 +21,31 @@ public class BiomeUtil {
 		return checkBiome;
 	}
 
+	public static double getSurroundingBiomeTempAverage(BlockPos pos, World world, int range) {
+		double totalBiomeTemps = 0;
+		int count = 0;
+
+		for (int Xoffset = -range; Xoffset <= range; Xoffset++) {
+			for (int Yoffset = -range; Yoffset <= range; Yoffset++) {
+				for (int Zoffset = -range; Zoffset <= range; Zoffset++) {
+					int Xmodified = pos.getX() + Xoffset;
+					int Ymodified = pos.getY() + Yoffset;
+					int Zmodified = pos.getZ() + Zoffset;
+
+					// This I assume gets the biome, though I don't know why it
+					// needs to use getBiome
+					Chunk testChunk = world.getChunkFromBlockCoords(new BlockPos(Xmodified, Ymodified, Zmodified));
+					Biome checkBiome = testChunk.getBiome(new BlockPos(Xmodified, Ymodified, Zmodified), world.getBiomeProvider());
+
+					if (checkBiome != null) {
+						totalBiomeTemps += getBiomeTemperature(checkBiome, Xmodified, Ymodified, Zmodified);
+						count++;
+					}
+				}
+			}
+		}
+
+		return totalBiomeTemps / count;
+	}
+
 }

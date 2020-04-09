@@ -106,7 +106,7 @@ public class SoleSurvivorEventHandler {
 		Biome biome = BiomeUtil.getBiomeAtLocation(player.world, new BlockPos(player.posX, player.posY, player.posZ));
 
 		event.getLeft().add("TEMP: " + cap.getTemperature());
-		event.getLeft().add("BIOMETEMP: " + BiomeUtil.getBiomeTemperature(biome, player.posX, player.posY, player.posZ));
+		event.getLeft().add("BIOMETEMP: " + BiomeUtil.getSurroundingBiomeTempAverage(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5));
 		event.getLeft().add("test");
 	}
 

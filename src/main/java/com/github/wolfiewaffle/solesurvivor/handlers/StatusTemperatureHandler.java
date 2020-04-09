@@ -2,14 +2,11 @@ package com.github.wolfiewaffle.solesurvivor.handlers;
 
 import com.github.wolfiewaffle.solesurvivor.util.BiomeUtil;
 
-import enviromine.handlers.BiomeGenBase;
-import enviromine.utils.EnviroUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.BiomeProperties;
 import net.minecraft.world.chunk.Chunk;
 
 public class StatusTemperatureHandler {
@@ -77,7 +74,7 @@ public class StatusTemperatureHandler {
 						Biome checkBiome = testChunk.getBiome(new BlockPos((x + areaX), areaY, (z + areaZ)), world.getBiomeProvider());
 						
 						if(checkBiome != null)
-						{
+						{}
 							else
 							{
 								surBiomeTemps += BiomeUtil.getBiomeTemperature(checkBiome, (x + areaX), (y + areaY), (z + areaZ));
@@ -87,16 +84,29 @@ public class StatusTemperatureHandler {
 						}
 					}
 				}
+			}
 		
 		return null;
 	}
 
-	private static void getSurroundingBiomeData(BlockPos pos, int range) {
+	private static void getSurroundingBiomeData(BlockPos pos, World world, int range) {
+		double totalBiomeTemps = 0;
 
 		for (int Xoffset = -range; Xoffset <= range; Xoffset++) {
 			for (int Yoffset = -range; Yoffset <= range; Yoffset++) {
 				for (int Zoffset = -range; Zoffset <= range; Zoffset++) {
-					
+					int Xmodified = pos.getX() + Xoffset;
+					int Ymodified = pos.getY() + Yoffset;
+					int Zmodified = pos.getZ() + Zoffset;
+
+					// This I assume gets the biome, though I don't know why it
+					// needs to use getBiome
+					Chunk testChunk = world.getChunkFromBlockCoords(new BlockPos(Xmodified, Ymodified, Zmodified));
+					Biome checkBiome = testChunk.getBiome(new BlockPos(Xmodified, Ymodified, Zmodified), world.getBiomeProvider());
+
+					if (checkBiome != null) {
+						totalBiomeTemps += BiomeUtil.getBiomeTemperature(checkBiome, Xmodified, Ymodified, Zmodified);
+					}
 				}
 			}
 		}
