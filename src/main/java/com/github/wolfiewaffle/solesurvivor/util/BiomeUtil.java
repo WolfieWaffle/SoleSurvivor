@@ -3,6 +3,8 @@ package com.github.wolfiewaffle.solesurvivor.util;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -12,21 +14,18 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 
 public class BiomeUtil {
 
-	public static double getBiomeTemperature(Biome biome) {
-		return biome.getDefaultTemperature();
+
+
+	public static double getBiomeTemp(EntityLiving entityLiving, BlockPos pos, World world, int range) {
+		double biomeTemp = 0;
+
+		biomeTemp = getAverageBaseBiomeTemp(pos, world, range);
+		
+
+		return biomeTemp;
 	}
 
-	public static double getBiomeTemperature(Biome biome, double x, double y, double z) {
-		return biome.getTemperature(new BlockPos(x, y, z));
-	}
-
-	public static Biome getBiomeAtLocation(World world, BlockPos pos) {
-		Chunk testChunk = world.getChunkFromBlockCoords(pos);
-		Biome checkBiome = testChunk.getBiome(pos, world.getBiomeProvider());
-		return checkBiome;
-	}
-
-	public static double getSurroundingBiomeTempAverage(BlockPos pos, World world, int range) {
+	public static double getAverageBaseBiomeTemp(BlockPos pos, World world, int range) {
 		double totalBiomeTemps = 0;
 		int count = 0;
 
@@ -79,5 +78,20 @@ public class BiomeUtil {
 			// removed "clean" as a design choice
 		}
 	}
+
+	public static double getBiomeTemperature(Biome biome) {
+		return biome.getDefaultTemperature();
+	}
+
+	public static double getBiomeTemperature(Biome biome, double x, double y, double z) {
+		return biome.getTemperature(new BlockPos(x, y, z));
+	}
+
+	public static Biome getBiomeAtLocation(World world, BlockPos pos) {
+		Chunk testChunk = world.getChunkFromBlockCoords(pos);
+		Biome checkBiome = testChunk.getBiome(pos, world.getBiomeProvider());
+		return checkBiome;
+	}
+
 
 }

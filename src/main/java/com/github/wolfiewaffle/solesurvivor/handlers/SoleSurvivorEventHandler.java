@@ -117,7 +117,7 @@ public class SoleSurvivorEventHandler {
 		double newTTemp = cap.getTargetTemperature();
 
 		if (player != null && !player.getEntityWorld().isRemote) {
-			newTTemp = BiomeUtil.getSurroundingBiomeTempAverage(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
+			newTTemp = BiomeUtil.getPlayerBiomeTemp(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
 
 			cap.setTargetTemperature(newTTemp);
 			cap.setTemperature(newTemp);
