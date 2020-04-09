@@ -7,6 +7,7 @@ import com.github.wolfiewaffle.solesurvivor.capability.TemperatureProvider;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorTempMessage;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorPacketHandler;
 import com.github.wolfiewaffle.solesurvivor.util.BiomeUtil;
+import com.github.wolfiewaffle.solesurvivor.util.TempUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -117,7 +118,7 @@ public class SoleSurvivorEventHandler {
 		double newTTemp = cap.getTargetTemperature();
 
 		if (player != null && !player.getEntityWorld().isRemote) {
-			newTTemp = BiomeUtil.getPlayerBiomeTemp(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
+			newTTemp = TempUtil.getPlayerTemp(player, new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
 
 			cap.setTargetTemperature(newTTemp);
 			cap.setTemperature(newTemp);
