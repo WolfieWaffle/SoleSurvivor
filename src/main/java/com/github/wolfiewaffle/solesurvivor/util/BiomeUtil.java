@@ -1,9 +1,14 @@
 package com.github.wolfiewaffle.solesurvivor.util;
 
+import java.awt.Color;
+import java.util.ArrayList;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeDictionary.Type;
 
 public class BiomeUtil {
 
@@ -46,6 +51,33 @@ public class BiomeUtil {
 		}
 
 		return totalBiomeTemps / count;
+	}
+
+	public static String getBiomeWater(Biome biome) {
+		int waterColour = biome.getWaterColorMultiplier();
+		boolean looksBad = false;
+
+		if (waterColour != 16777215) {
+			Color bColor = new Color(waterColour);
+
+			if (bColor.getRed() < 200 || bColor.getGreen() < 200 || bColor.getBlue() < 200) {
+				looksBad = true;
+			}
+		}
+
+		ArrayList<Type> typeList = new ArrayList<>();
+		typeList.addAll(BiomeDictionary.getTypes(biome));
+
+		if (typeList.contains(Type.SWAMP) || typeList.contains(Type.JUNGLE) || typeList.contains(Type.DEAD) || typeList.contains(Type.WASTELAND) || looksBad) {
+			return "dirty";
+		} else if (typeList.contains(Type.OCEAN) || typeList.contains(Type.BEACH)) {
+			return "salty";
+		} else if (typeList.contains(Type.SNOWY) || typeList.contains(Type.CONIFEROUS) || biome.getDefaultTemperature() < 0F) {
+			return "cold";
+		} else {
+			return "dirty";
+			// removed "clean" as a design choice
+		}
 	}
 
 }
