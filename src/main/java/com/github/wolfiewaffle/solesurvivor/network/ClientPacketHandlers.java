@@ -12,22 +12,24 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  */
 public class ClientPacketHandlers {
 
-	public static void handleSoleSurvivor(SoleSurvivorMessage message, MessageContext ctx) {
+	public static void handleSoleSurvivor(SoleSurvivorTempMessage message, MessageContext ctx) {
 
 		// The client player
 		EntityPlayer clientPlayer = Minecraft.getMinecraft().player;
 
 		// The value that was sent
 		double temp = message.getTemperature();
+		double tTemp = message.getTargetTemperature();
 
 		Minecraft.getMinecraft().addScheduledTask(() -> {
-			System.out.println("cEMP " + temp);
 
 			// We know this is client capability instance because this method is
 			// not called on the server because
 			// the packet is not sent to the server, therefore no isRemote check
 			ITemperature cap = clientPlayer.getCapability(SoleSurvivorEventHandler.TEMPERATURE, null);
 			cap.setTemperature(temp);
+			cap.setTargetTemperature(tTemp);
+			System.out.println("t1 " + temp + " t2 " + tTemp);
 		});
 	}
 

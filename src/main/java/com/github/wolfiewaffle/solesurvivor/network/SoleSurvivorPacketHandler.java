@@ -10,7 +10,7 @@ public class SoleSurvivorPacketHandler {
 	public static final SimpleNetworkWrapper CHANNEL_INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("solesurvivor");
 
 	public static void init() {
-		CHANNEL_INSTANCE.registerMessage(SoleSurvivorMessage.Handler.class, SoleSurvivorMessage.class, discriminator++, Side.CLIENT);
+		CHANNEL_INSTANCE.registerMessage(SoleSurvivorTempMessage.Handler.class, SoleSurvivorTempMessage.class, discriminator++, Side.CLIENT);
 	}
 
 }

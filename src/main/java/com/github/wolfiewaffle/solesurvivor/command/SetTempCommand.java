@@ -1,7 +1,7 @@
 package com.github.wolfiewaffle.solesurvivor.command;
 
 import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
-import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorMessage;
+import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorTempMessage;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorPacketHandler;
 
 import net.minecraft.command.CommandBase;
@@ -45,7 +45,7 @@ public class SetTempCommand extends CommandBase {
 					ITemperature cap = player.getCapability(TEMPERATURE, null);
 
 					cap.setTemperature(newTemp);
-					SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorMessage(newTemp), player);
+					SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp), player);
 				}
 			}
 		} catch (Exception e) {
