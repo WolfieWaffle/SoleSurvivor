@@ -13,6 +13,7 @@ public class SoleSurvivorTempMessage implements IMessage {
 
 	@CapabilityInject(value = ITemperature.class)
 	public static Capability<ITemperature> TEMPERATURE = null;
+	public static final double NO_CHANGE = -999999;
 
 	// A default constructor is ALWAYS required even if you have another one
 	public SoleSurvivorTempMessage() {

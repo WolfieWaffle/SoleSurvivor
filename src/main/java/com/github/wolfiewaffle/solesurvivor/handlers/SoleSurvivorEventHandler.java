@@ -82,7 +82,7 @@ public class SoleSurvivorEventHandler {
 	@SubscribeEvent
 	public static void playerClone(PlayerEvent.Clone event) {
 
-		// Player is the new player (in the dimension being travelled to)
+		// Player is the new player (in the dimension being traveled to)
 		EntityPlayer player = event.getEntityPlayer();
 		ITemperature newTemperatureCap = player.getCapability(TemperatureProvider.TEMPERATURE, null);
 		double newTemp = newTemperatureCap.getTemperature();
@@ -104,29 +104,28 @@ public class SoleSurvivorEventHandler {
 	public static void renderText(RenderGameOverlayEvent.Text event) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		ITemperature cap = player.getCapability(TEMPERATURE, null);
-		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
-		Biome biome = BiomeUtil.getBiomeAtLocation(player.world, pos);
 
 		event.getLeft().add("TEMP: " + cap.getTemperature());
 		event.getLeft().add("TARGET: " + cap.getTargetTemperature());
-		event.getLeft().add("BIOMETEMP: " + BiomeUtil.getSurroundingBiomeTempAverage(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5));
-		event.getLeft().add("test");
 	}
 
 	@SubscribeEvent
 	public static void playerTick(PlayerTickEvent event) {
 		ITemperature cap = event.player.getCapability(TEMPERATURE, null);
-//		double newTemp = cap.getTemperature() + 1;
+		EntityPlayer player = event.player;
+		double newTemp = cap.getTemperature();
+		double newTTemp = cap.getTargetTemperature();
 
-		if (event.player != null && !event.player.getEntityWorld().isRemote) {
-			System.out.println("TEMP " + cap.getTemperature());
+		if (player != null && !player.getEntityWorld().isRemote) {
+			newTTemp = BiomeUtil.getSurroundingBiomeTempAverage(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
 
+			cap.setTargetTemperature(newTTemp);
 			cap.setTemperature(newTemp);
 		}
 
 		// Send packet
 		if (!event.player.world.isRemote) {
-			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, cap.getTargetTemperature()), ((EntityPlayerMP) event.player));
+			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, newTTemp), ((EntityPlayerMP) event.player));
 		}
 	}
 
