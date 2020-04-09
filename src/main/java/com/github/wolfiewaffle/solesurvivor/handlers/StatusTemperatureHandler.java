@@ -2,7 +2,7 @@ package com.github.wolfiewaffle.solesurvivor.handlers;
 
 import com.github.wolfiewaffle.solesurvivor.util.BiomeUtil;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -11,85 +11,15 @@ import net.minecraft.world.chunk.Chunk;
 
 public class StatusTemperatureHandler {
 
-	public static float[] getSurroundingData(EntityLivingBase entityLiving, int range) {
+	public static void getTargetTemp(BlockPos pos, EntityLiving entity, int range) {
+		double finalTargetTemp = 0;
+		World world = entity.world;
 
-		float[] data = new float[8];
-		float temp = -999F;
-		float cooling = 0;
-
-		int x = MathHelper.floor(entityLiving.posX);
-		int y = MathHelper.floor(entityLiving.posY);
-		int z = MathHelper.floor(entityLiving.posZ);
-
-		// Get world
-		World world = entityLiving.getEntityWorld();
-		
-		// If the world is null, return
-		if (world == null) {
-			return data;
-		}
-
-		// Get the chunk
-		Chunk chunk = entityLiving.getEntityWorld().getChunkFromBlockCoords(new BlockPos(x, y, z));
-
-		// Null chunk
-		if (chunk == null) {
-			return data;
-		}
-
-		// Get biome
-		Biome biome = world.getBiome(new BlockPos(entityLiving.posX, entityLiving.posY, entityLiving.posZ));
-
-		if (biome == null) {
-			return data;
-		}
-
-		// TODO: ???
-		float surBiomeTemps = 0;
-		int biomeTempChecks = 0;
-		
-		// Is day?
-		boolean isDay = world.isDaytime();
-		
-		//Note: This is offset slightly so that heat peaks after noon.
-		float scale = 1.25F; // From Enviromine: Anything above 1 forces the maximum and minimum temperatures to plateau when they're reached
-		// TODO: clean up this Enviromine function
-		float dayPercent = MathHelper.clamp((float)(Math.sin(Math.toRadians(((world.getWorldTime()%24000L)/24000D)*360F - 30F))*0.5F + 0.5F)*scale, 0F, 1F);
-		
-		// TODO: ???
-		int lightLev = 0;
-		int blockLightLev = 0;		
-		
-		// Biome check
-		for(int areaX = -range; areaX <= range; areaX++)
-		{
-			for(int areaY = -range; areaY <= range; areaY++)
-			{
-				for(int areaZ = -range; areaZ <= range; areaZ++)
-				{
-					if(y == 0)
-					{
-						// This I assume gets the biome, though I don't know why it needs to use getBiome 
-						Chunk testChunk = world.getChunkFromBlockCoords(new BlockPos((x + areaX), areaY, (z + areaZ)));
-						Biome checkBiome = testChunk.getBiome(new BlockPos((x + areaX), areaY, (z + areaZ)), world.getBiomeProvider());
-						
-						if(checkBiome != null)
-						{}
-							else
-							{
-								surBiomeTemps += BiomeUtil.getBiomeTemperature(checkBiome, (x + areaX), (y + areaY), (z + areaZ));
-							}
-							
-							biomeTempChecks += 1;
-						}
-					}
-				}
-			}
-		
-		return null;
+		finalTargetTemp = getSurroundingBiomeData(pos, world, range);
+		finalTargetTemp = addAmplitudeModifier(entity, finalTargetTemp);
 	}
 
-	private static void getSurroundingBiomeData(BlockPos pos, World world, int range) {
+	private static double getSurroundingBiomeData(BlockPos pos, World world, int range) {
 		double totalBiomeTemps = 0;
 
 		for (int Xoffset = -range; Xoffset <= range; Xoffset++) {
@@ -110,6 +40,28 @@ public class StatusTemperatureHandler {
 				}
 			}
 		}
+
+		return totalBiomeTemps;
+	}
+
+	private static double addAmplitudeModifier(EntityLiving entity, double baseTemp) {
+		double highTemp = -30F; // Max temp at high altitude
+		double lowTemp = 30F; // Min temp at low altitude (Geothermal Heating)
+
+		// TODO: document this Eviromine code
+		if (entity.posY < 48) {
+			if (lowTemp - baseTemp > 0) {
+				baseTemp += (lowTemp - baseTemp) * (1F - (entity.posY / 48F));
+			}
+		} else if (entity.posY > 90 && entity.posY < 256) {
+			if (highTemp - baseTemp < 0) {
+				baseTemp -= MathHelper.abs((float) (highTemp - baseTemp)) * ((entity.posY - 90F) / 166F);
+			}
+		} else if (entity.posY >= 256) {
+			baseTemp = baseTemp < highTemp ? baseTemp : highTemp;
+		}
+
+		return baseTemp;
 	}
 
 }

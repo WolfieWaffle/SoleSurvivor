@@ -44,6 +44,8 @@ public class SoleSurvivor {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+
+		// No idea what this is I just know I need it
 		CapabilityManager.INSTANCE.register(ITemperature.class, new TemperatureStorage(), Temperature::new);
 		SoleSurvivorPacketHandler.init();
 		SoleSurvivor.proxy.preInit(event);

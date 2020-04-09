@@ -3,9 +3,10 @@ package com.github.wolfiewaffle.solesurvivor.capability;
 public class Temperature implements ITemperature {
 
 	private double tempature;
+	private double targetTempature;
 
 	public Temperature() {
-		
+
 	}
 
 	@Override
@@ -16,6 +17,16 @@ public class Temperature implements ITemperature {
 	@Override
 	public double getTemperature() {
 		return tempature;
+	}
+
+	@Override
+	public void setTargetTemperature(double targetTempature) {
+		this.targetTempature = targetTempature;
+	}
+
+	@Override
+	public double getTargetTemperature() {
+		return targetTempature;
 	}
 
 }

@@ -103,9 +103,11 @@ public class SoleSurvivorEventHandler {
 	public static void renderText(RenderGameOverlayEvent.Text event) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		ITemperature cap = player.getCapability(TEMPERATURE, null);
-		Biome biome = BiomeUtil.getBiomeAtLocation(player.world, new BlockPos(player.posX, player.posY, player.posZ));
+		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+		Biome biome = BiomeUtil.getBiomeAtLocation(player.world, pos);
 
 		event.getLeft().add("TEMP: " + cap.getTemperature());
+		event.getLeft().add("TARGET: " + getTargetTemp(StatusTemperatureHandler.getTargetTemp(pos, player, 5)));
 		event.getLeft().add("BIOMETEMP: " + BiomeUtil.getSurroundingBiomeTempAverage(new BlockPos(player.posX, player.posY, player.posZ), player.world, 5));
 		event.getLeft().add("test");
 	}
