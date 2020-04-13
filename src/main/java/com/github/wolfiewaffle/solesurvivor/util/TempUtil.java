@@ -23,9 +23,21 @@ public class TempUtil {
 	@CapabilityInject(value = ITemperature.class)
 	public static Capability<ITemperature> TEMPERATURE = null;
 
-	public static double getPlayerTemp(EntityLivingBase entityLiving, BlockPos pos, World world, int range) {
+	/**
+	 * 
+	 * @param entityLiving
+	 * @param pos
+	 * @param world
+	 * @param range
+	 * @return Array:
+	 * 0: airTemp, or the base temperature around the player, the target
+	 * 1: dropSpeed, or the amount temperature should decrease this tick
+	 * 2: riseSpeed, or the amount temperature should increase this tick
+	 */
+	public static double[] getTempInfo(EntityLivingBase entityLiving, BlockPos pos, World world, int range) {
 		ITemperature cap = entityLiving.getCapability(TEMPERATURE, null);
 		double oldTemp = cap.getTemperature();
+		double data[] = new double[3];
 		double newTemp = 0;
 		float dropSpeed = 0.001F;
 		float riseSpeed = 0.001F;
@@ -38,7 +50,7 @@ public class TempUtil {
 
 		newTemp = BiomeUtil.getAverageBaseBiomeTemp(pos, world, range);
 		newTemp = getTempWithAltitude(entityLiving, newTemp);
-		newTemp = getBiomeTempWithWater(newTemp, entityLiving);
+//		newTemp = getBiomeTempWithWater(newTemp, entityLiving);
 		// TODO: From enviromine
 		newTemp -= cooling;
 		
@@ -57,7 +69,7 @@ public class TempUtil {
 
 			if (world.canBlockSeeSky(pos)) {
 				// Enviromine
-				// dropSpeed = 0.01F;
+				dropSpeed = 0.01F;
 			}
 		}
 
@@ -76,19 +88,39 @@ public class TempUtil {
 
 		// Entity modifiers placeholder
 
-		// TODO: figure out what this variable is
-		double tempFin = 0F;
+		// If in water
+//		if(entityLiving.isInWater())
+//		{
+//			if(bTemp > 25F)
+//			{
+//				if(bTemp > 50F)
+//				{
+//					bTemp -= 50F;
+//				} else
+//				{
+//					bTemp = 25F;
+//				}
+//			}
+//			dropSpeed = 0.01F;
+//		}
 
+		double airTemp = 0F;
+
+		System.out.println("OLD " + oldTemp);
 		if (oldTemp > newTemp) {
-			tempFin = (newTemp + oldTemp) / 2;
+			airTemp = (newTemp + oldTemp) / 2;
 			if (oldTemp > (newTemp + 5F)) {
 				riseSpeed = 0.005F;
 			}
 		} else {
-			tempFin = newTemp;
+			airTemp = newTemp;
 		}
+		System.out.println(newTemp);
 
-		return tempFin;
+		data[0] = airTemp;
+		data[1] = dropSpeed;
+		data[2] = riseSpeed;
+		return data;
 	}
 
 	private static double getTempWithAltitude(EntityLivingBase entityLiving, double biomeTemperature) {

@@ -29,7 +29,6 @@ public class ClientPacketHandlers {
 			ITemperature cap = clientPlayer.getCapability(SoleSurvivorEventHandler.TEMPERATURE, null);
 			cap.setTemperature(temp);
 			cap.setTargetTemperature(tTemp);
-			System.out.println("t1 " + temp + " t2 " + tTemp);
 		});
 	}
 

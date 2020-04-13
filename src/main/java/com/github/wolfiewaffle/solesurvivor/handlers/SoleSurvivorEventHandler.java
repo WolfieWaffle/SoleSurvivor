@@ -118,15 +118,44 @@ public class SoleSurvivorEventHandler {
 		double newTTemp = cap.getTargetTemperature();
 
 		if (player != null && !player.getEntityWorld().isRemote) {
-			newTTemp = TempUtil.getPlayerTemp(player, new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
+			double[] data;
+			
+			data = TempUtil.getTempInfo(player, new BlockPos(player.posX, player.posY, player.posZ), player.world, 5);
 
-			cap.setTargetTemperature(newTTemp);
+			// Temperature checks
+			double relTemp = data[0] + 12F;
+			double dropSpeed = data[1];
+			double riseSpeed = data[2];
+
+			if (newTemp - relTemp > 0) {
+				// Cold
+				double spAmp = Math.abs(newTemp - relTemp) > 10F ? Math.abs(newTemp - relTemp) / 10F : 1F;
+				if (newTemp - relTemp >= dropSpeed * spAmp) {
+					newTemp -= dropSpeed * spAmp;
+				} else {
+					newTemp = relTemp;
+				}
+			} else if (newTemp - relTemp < 0) {
+				// Hot
+				double spAmp = Math.abs(newTemp - relTemp) > 10F ? Math.abs(newTemp - relTemp) / 10F : 1F;
+				if (newTemp - relTemp <= -riseSpeed * spAmp) {
+					
+					newTemp += riseSpeed * spAmp;
+				} else {
+					newTemp = relTemp;
+				}
+			}
+
+			cap.setTargetTemperature(relTemp);
+//			cap.setTargetTemperature(newTemp);
 			cap.setTemperature(newTemp);
+			
+			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, relTemp), ((EntityPlayerMP) event.player));
 		}
 
 		// Send packet
 		if (!event.player.world.isRemote) {
-			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, newTTemp), ((EntityPlayerMP) event.player));
+//			SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, relTemp), ((EntityPlayerMP) event.player));
 		}
 	}
 

@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class SetTempCommand extends CommandBase {
+public class CommandSetTemp extends CommandBase {
 
 	@CapabilityInject(value = ITemperature.class)
 	public static Capability<ITemperature> TEMPERATURE = null;
@@ -45,7 +45,7 @@ public class SetTempCommand extends CommandBase {
 					ITemperature cap = player.getCapability(TEMPERATURE, null);
 
 					cap.setTemperature(newTemp);
-					SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp), player);
+					SoleSurvivorPacketHandler.CHANNEL_INSTANCE.sendTo(new SoleSurvivorTempMessage(newTemp, cap.getTargetTemperature()), player);
 				}
 			}
 		} catch (Exception e) {

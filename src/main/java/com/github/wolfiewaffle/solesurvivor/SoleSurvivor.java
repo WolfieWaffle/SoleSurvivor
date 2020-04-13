@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import com.github.wolfiewaffle.solesurvivor.capability.ITemperature;
 import com.github.wolfiewaffle.solesurvivor.capability.Temperature;
 import com.github.wolfiewaffle.solesurvivor.capability.TemperatureStorage;
+import com.github.wolfiewaffle.solesurvivor.command.CommandSetTemp;
 import com.github.wolfiewaffle.solesurvivor.network.SoleSurvivorPacketHandler;
 import com.github.wolfiewaffle.solesurvivor.proxy.CommonProxy;
 
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @EventBusSubscriber
 @Mod(modid = SoleSurvivor.MODID, name = SoleSurvivor.MODNAME, version = SoleSurvivor.VERSION)
@@ -59,6 +61,11 @@ public class SoleSurvivor {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		SoleSurvivor.proxy.postInit(event);
+	}
+
+	@EventHandler
+	public static void onFMLServerStartingEvent(final FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandSetTemp());
 	}
 
 	// IGNORE COPIED FROM A PREVIOUS MOD
